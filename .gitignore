@@ -1,0 +1,8 @@
+# Result files and PDF figures (not part of the repository)
+results/
+**/figures/*.pdf
+
+# Python and system files
+__pycache__/
+*.pyc
+.DS_Store
