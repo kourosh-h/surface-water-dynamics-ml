@@ -25,18 +25,6 @@ water oxygens at the distance *r*.
 Steps 1–4 read the trajectories (MDAnalysis, 8 systems at a time); `systems.py` holds the layout of the folder of the
 simulations and finds the systems in it. The columns of every file are explained at the top of the scripts.
 
-## Figures
-
-<p align="center"><img src="figures/first_shell_water_per_group.png" width="40%" alt="First-shell water at each group of atoms"></p>
-
-First-shell water per nm² at the CH<sub>3</sub> and CH<sub>2</sub> groups and at the oxygens of the silica and the head
-groups, mean over the chain lengths (band: SD over the chain lengths).
-
-<p align="center"><img src="figures/water_rdfs.png" width="100%" alt="Radial distribution functions"></p>
-
-RDFs between the water oxygen and the four groups of atoms (columns), for every chain length (rows) and coverage
-(colors).
-
 ## Run
 
 ```bash

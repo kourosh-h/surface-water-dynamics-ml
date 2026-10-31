@@ -18,7 +18,6 @@
 <p align="center">
   <a href="#the-systems">Systems</a> ·
   <a href="#parts">Parts</a> ·
-  <a href="#results">Results</a> ·
   <a href="#how-to-run">How to run</a> ·
   <a href="#inputs">Inputs</a> ·
   <a href="#requirements">Requirements</a>
@@ -51,27 +50,7 @@ names of their folders, so it runs on any set of chain lengths and coverages.
 | [Region_Classification](Region_Classification) | tests of the two regimes: the number of groups, bootstrap stability, the two halves of the run, longer lags, the renewal index and the MSD exponent |
 | [First_Shell_Composition](First_Shell_Composition) | the share of the first-shell water at each group of atoms |
 
-Every part has its own README with its steps, the files they write and its figures.
-
-## Results
-
-<table>
-<tr>
-<td width="38%"><img src="RDF_MSD_and_P/figures/first_shell_water_per_group.png" alt="First-shell water at each group of atoms"></td>
-<td width="62%"><img src="ML_Classification/figures/water_dynamics_regimes.png" alt="Two regimes of the water dynamics"></td>
-</tr>
-<tr>
-<td valign="top">First-shell water per nm² at the CH<sub>3</sub> and CH<sub>2</sub> groups and at the oxygens of the
-silica and the head groups, mean over the chain lengths (band: SD over the chain lengths).</td>
-<td valign="top">(a) The regime of the water dynamics of every system. (b), (c) MSD and <i>P</i> divided by their
-values at 20 ps, mean over the systems of each regime (band: SD).</td>
-</tr>
-</table>
-
-<p align="center"><img src="Region_MSD_and_P/figures/first_shell_water_msd.png" width="100%" alt="MSD of the first-shell water"></p>
-
-Survival-conditioned lateral MSD of the first-shell water against the lag time, one panel per coverage and one line per
-chain length (band: SD of the ten 9-ns blocks).
+Every part has its own README with its steps and the files they write.
 
 ## How to run
 

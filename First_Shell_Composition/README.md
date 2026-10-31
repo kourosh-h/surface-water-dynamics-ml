@@ -13,14 +13,6 @@ shell belongs to the group of its closest atom (step 4 of `../RDF_MSD_and_P`).
 
 The columns of every file are explained at the top of the scripts.
 
-## Figure
-
-<p align="center"><img src="figures/first_shell_composition.png" width="100%" alt="Composition of the first hydration shell"></p>
-
-(a) The group closest to most of the first-shell water (color), shaded by its share of the first-shell water (below
-1/2, 1/2 to 2/3, above 2/3), interpolated between the systems; thick lines where the largest group changes. (b)-(d) The
-fraction of the first-shell water closest to CH<sub>3</sub>, CH<sub>2</sub> and the oxygens, one line per chain length.
-
 ## Run
 
 ```bash

@@ -18,18 +18,6 @@ input of `../Region_Classification`.
 of the simulation systems, `results/table_simulation_systems.csv` of sam-system-summary (`SYSTEM_TABLE`). The columns of
 every file are explained at the top of the scripts.
 
-## Figures
-
-<p align="center"><img src="figures/first_shell_water_msd.png" width="100%" alt="MSD of the first-shell water"></p>
-
-Survival-conditioned lateral MSD of all first-shell water against the lag time, one panel per coverage and one line
-per chain length (band: SD of the ten 9-ns block values).
-
-<p align="center"><img src="figures/first_shell_water_survival.png" width="100%" alt="Contact survival of the first-shell water"></p>
-
-Contact-survival probability *P*(τ) of all first-shell water against the lag time, on a logarithmic axis (band: SD of
-the ten 9-ns block values).
-
 ## Run
 
 ```bash

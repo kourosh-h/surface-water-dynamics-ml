@@ -14,14 +14,6 @@ Tests of the two regimes of all first-shell water, from the MSD and *P* of every
 
 The columns of every file are explained at the top of the scripts.
 
-## Figure
-
-<p align="center"><img src="figures/water_regime_tests.png" width="100%" alt="Tests of the two regimes"></p>
-
-(a) Silhouette score and bootstrap stability for *k* = 2, 3 and 4 groups (shaded: *k* = 2). (b) Renewal index
-*P*(100 ps)/*P*(20 ps) and (c) exponent α of MSD ~ τ<sup>α</sup> (20 to 100 ps) of every system over the chain lengths
-and coverages; white lines: the border between the two regimes.
-
 ## Run
 
 ```bash

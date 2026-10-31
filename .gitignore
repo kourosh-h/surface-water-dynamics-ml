@@ -1,6 +1,6 @@
-# Result files and PDF figures (not part of the repository)
+# Result files and figures (not part of the repository)
 results/
-**/figures/*.pdf
+**/figures/
 
 # Python and system files
 __pycache__/

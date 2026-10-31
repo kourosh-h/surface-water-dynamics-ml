@@ -14,14 +14,6 @@ the group of the lower mean coverage.
 
 The columns of every file are explained at the top of the scripts.
 
-## Figure
-
-<p align="center"><img src="figures/water_dynamics_regimes.png" width="100%" alt="Two regimes of the water dynamics"></p>
-
-(a) The regime of the water dynamics of every system over the chain lengths and coverages. (b), (c) Survival-conditioned
-lateral MSD and contact survival *P*(τ) of the first-shell water, each divided by its value at 20 ps: mean over the
-systems of each regime (line) and SD (band).
-
 ## Run
 
 ```bash
