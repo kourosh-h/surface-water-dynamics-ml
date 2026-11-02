@@ -1,6 +1,6 @@
-# Result files and figures (not part of the repository)
+# result files and figures of the steps
 results/
-**/figures/
+figures/
 
 # Python and system files
 __pycache__/
