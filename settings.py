@@ -17,6 +17,8 @@ RAW_TRAJECTORY = 'traj_comp.xtc'        # step 0: the trajectory written by GROM
 
 # Every system has a name (for its result files), its folder inside SIMULATIONS and the values that describe it. The
 # names of these values are listed in LABELS; they are the first columns of the tables.
+# Change this part to your own systems: the lists and the loop below make the systems of the example from the chain
+# lengths and the coverages of its SAMs and from the names of their folders.
 CHAIN_LENGTHS = [4, 5, 6, 7, 8]
 COVERAGES = ['0.08', '0.45', '0.77', '1.20', '1.65', '2.0', '2.40', '2.92', '3.45', '3.9']    # as in the folder names
 
