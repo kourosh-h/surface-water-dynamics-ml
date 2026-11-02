@@ -1,15 +1,16 @@
 """
-Step 7: the two regimes of the water dynamics: two clusters of the systems from the shapes of their MSD and P curves
-(k-means clustering with scikit-learn).
+Step 7: the regimes of the water dynamics: N_CLUSTERS clusters of the systems from the shapes of their MSD and P
+curves (k-means clustering with scikit-learn).
 
 The MSD and P of every system are divided by their values at the first lag. The shape of the curves of a system: the
 logarithms of these ratios at the lags of SHAPE_LAGS, each scaled to mean 0 and standard deviation 1 over the systems.
-k-means with two clusters (20 starts). Regime 0 (faster renewal) is the cluster with the lower median of P at the last
-lag of SHAPE_LAGS divided by P at the first lag.
+k-means with N_CLUSTERS clusters (20 starts). The regimes are numbered from the fastest to the slowest renewal of the
+first shell: by the median, over the systems of a cluster, of P at the last lag of SHAPE_LAGS divided by P at the first
+lag, from the lowest to the highest.
 
 Input:  results/msd_and_P.csv (step 6)
 Output (folder results/clusters):
-    regimes.csv: the labels of the system, regime (0 faster renewal, 1 slower renewal)
+    regimes.csv: the labels of the system, regime (0 for the fastest renewal)
     curves_MSD_rel.csv: the labels, regime, lag_ps, MSD_rel
     curves_P_rel.csv: the labels, regime, lag_ps, P_rel
     regime_mean_MSD_rel.csv and regime_mean_P_rel.csv: regime, lag_ps, mean, sd (standard deviation over the systems
@@ -24,6 +25,23 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 
 import settings
+
+
+def number_by_renewal(clusters, shapes):
+    """
+    The clusters numbered from the fastest to the slowest renewal: by the median of log(P at the last lag of
+    SHAPE_LAGS / P at the first lag) of the systems of every cluster, from the lowest to the highest.
+    """
+    last = shapes[f'log P_rel at {settings.SHAPE_LAGS[-1]} ps'].to_numpy()
+    medians = []
+    for cluster in range(settings.N_CLUSTERS):
+        medians.append(np.median(last[clusters == cluster]))
+    order = np.argsort(medians, kind='stable')          # the clusters from the lowest to the highest median
+    regime = np.zeros(len(clusters), dtype=int)
+    for number, cluster in enumerate(order):
+        regime[clusters == cluster] = number
+    return regime
+
 
 Path('results/clusters').mkdir(parents=True, exist_ok=True)
 
@@ -40,15 +58,11 @@ for lag in settings.SHAPE_LAGS:
     shapes[f'log MSD_rel at {lag} ps'] = np.log(table['MSD_rel', lag])
     shapes[f'log P_rel at {lag} ps'] = np.log(table['P_rel', lag])
 
-# two clusters (k-means) of the shapes, each shape value scaled to mean 0 and standard deviation 1
+# clusters (k-means) of the shapes, each shape value scaled to mean 0 and standard deviation 1
 X = StandardScaler().fit_transform(shapes)
-regime = KMeans(n_clusters=2, random_state=settings.SEED, n_init=20).fit(X).labels_
-# regime 0 (faster renewal) is the cluster whose P drops more until the last lag
-last = shapes[f'log P_rel at {settings.SHAPE_LAGS[-1]} ps'].to_numpy()
-if np.median(last[regime == 0]) > np.median(last[regime == 1]):
-    regime = 1 - regime
+clusters = KMeans(n_clusters=settings.N_CLUSTERS, random_state=settings.SEED, n_init=20).fit(X).labels_
 systems = shapes.index.to_frame(index=False)            # one row per system: its labels
-systems['regime'] = regime
+systems['regime'] = number_by_renewal(clusters, shapes)
 systems.to_csv('results/clusters/regimes.csv', index=False)
 
 # the curves with the regime of their system

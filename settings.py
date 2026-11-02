@@ -107,6 +107,7 @@ COUNT_LAGS = [20, 40, 100]      # ps, the lags of the counts of the molecule - t
 # Steps 7 and 8: k-means clustering
 # ----------------------------------------------------------------------
 SHAPE_LAGS = [40, 60, 80, 100]  # ps, the lags of the shapes of the MSD and P curves
+N_CLUSTERS = 2                  # the number of regimes; choose it from the scores of step 8
 CLUSTER_NUMBERS = [2, 3, 4]     # step 8: the numbers of clusters compared
 RESAMPLES = 200                 # step 8: the bootstrap resamples of the systems
 SEED = 123                      # random seed of k-means and of the resamples

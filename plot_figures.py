@@ -31,8 +31,8 @@ from matplotlib.ticker import FormatStrFormatter, LogLocator, NullFormatter
 
 import settings
 
-REGIME_COLORS = ['#2BA58A', '#1F5F99']
-REGIME_NAMES = ['faster renewal', 'slower renewal']
+REGIME_COLORS = ['#2BA58A', '#1F5F99', '#E68613', '#756BB1', '#B7371B', '#4DBBD5']
+REGIME_TITLE = 'regimes, from the fastest to the slowest renewal'
 LINE_COLORS = ['#4DBBD5', '#E68613', '#756BB1', '#B7371B', '#0D4F8B']
 
 plt.rcParams.update({
@@ -114,6 +114,7 @@ x_values = values_of(settings.X_LABEL)
 line_values = values_of(settings.LINE_LABEL)
 x_colors = colors_of(x_values)
 line_colors = colors_of(line_values, LINE_COLORS)
+regime_colors = colors_of(list(range(settings.N_CLUSTERS)), REGIME_COLORS)
 x_title = settings.LABEL_TITLES[settings.X_LABEL]
 group_names = []
 for name in settings.shell_groups(settings.SYSTEMS[0]):
@@ -218,7 +219,7 @@ color_legend(fig, x_colors, x_title, y=0.93)
 save(fig, 'msd_and_survival')
 
 # ----------------------------------------------------------------------
-# The two regimes
+# The regimes
 # ----------------------------------------------------------------------
 regimes = pd.read_csv('results/clusters/regimes.csv')
 fig, axes = plt.subplots(1, 3, figsize=(7.2, 2.3), gridspec_kw={'width_ratios': [2.0, 1, 1]})
@@ -234,8 +235,9 @@ for system in settings.SYSTEMS:
         row = line_values.index(system[settings.LINE_LABEL])
     grid[row, x_values.index(system[settings.X_LABEL])] = rows.regime.iloc[0]
 axes[0].pcolormesh(np.arange(len(x_values) + 1) - 0.5, np.arange(len(line_values) + 1) - 0.5,
-                   np.ma.masked_invalid(grid), cmap=ListedColormap(REGIME_COLORS),
-                   norm=BoundaryNorm([-0.5, 0.5, 1.5], 2), edgecolors='white', linewidth=0.8)
+                   np.ma.masked_invalid(grid), cmap=ListedColormap(list(regime_colors.values())),
+                   norm=BoundaryNorm(np.arange(settings.N_CLUSTERS + 1) - 0.5, settings.N_CLUSTERS),
+                   edgecolors='white', linewidth=0.8)
 tick_names = []
 for value in x_values:
     tick_names.append(value_text(value))
@@ -251,14 +253,15 @@ for value in line_values:
 axes[0].set_yticks(range(len(line_values)))
 axes[0].set_yticklabels(tick_names)
 entries = []
-for color, name in zip(REGIME_COLORS, REGIME_NAMES):
-    entries.append(Patch(facecolor=color, label=name))
-axes[0].legend(handles=entries, loc='lower left', bbox_to_anchor=(0.0, 1.0), ncol=2, handlelength=1.1)
-# (b), (c) the curves of the two regimes: mean and standard deviation
+for regime, color in regime_colors.items():
+    entries.append(Patch(facecolor=color, label=f'regime {regime}'))
+axes[0].legend(handles=entries, loc='lower left', bbox_to_anchor=(0.0, 1.0), ncol=min(settings.N_CLUSTERS, 4),
+               handlelength=1.1, title=REGIME_TITLE)
+# (b), (c) the curves of the regimes: mean and standard deviation
 panels = [(axes[1], 'MSD_rel', 'MSD relative to the first lag'), (axes[2], 'P_rel', '$P$ relative to the first lag')]
 for ax, name, title in panels:
     data = pd.read_csv(f'results/clusters/regime_mean_{name}.csv')
-    for regime, color in enumerate(REGIME_COLORS):
+    for regime, color in regime_colors.items():
         rows = data[data.regime == regime]
         ax.fill_between(rows.lag_ps, rows['mean'] - rows.sd, rows['mean'] + rows.sd, color=color, alpha=0.2, lw=0)
         ax.plot(rows.lag_ps, rows['mean'], color=color, lw=1.6)
@@ -269,7 +272,7 @@ axes[2].yaxis.set_major_locator(LogLocator(subs=(1.0, 2.0, 5.0)))
 axes[2].yaxis.set_major_formatter(FormatStrFormatter('%g'))
 axes[2].yaxis.set_minor_formatter(NullFormatter())
 for ax, letter in zip(axes, 'abc'):
-    ax.text(-0.1, 1.2, f'({letter})', transform=ax.transAxes, fontsize=9.0, va='bottom', ha='right')
+    ax.text(-0.1, 1.35, f'({letter})', transform=ax.transAxes, fontsize=9.0, va='bottom', ha='right')
 save(fig, 'regimes')
 
 # ----------------------------------------------------------------------
@@ -286,13 +289,14 @@ axes[0].set_xticks(scores.k)
 axes[0].set_xlabel('number of clusters $k$')
 axes[0].set_ylim(0, 1.05)
 axes[0].legend(loc='lower left')
-for regime, (color, name) in enumerate(zip(REGIME_COLORS, REGIME_NAMES)):
+for regime, color in regime_colors.items():
     keep = renewal.regime == regime
     axes[1].scatter(exponent.alpha[keep], renewal.P_ratio[keep], s=14, color=color, edgecolor='0.2', linewidth=0.3,
-                    label=name)
+                    label=f'regime {regime}')
 axes[1].set_xlabel(r'MSD exponent $\alpha$')
 axes[1].set_ylabel('renewal index')
-axes[1].legend(loc='lower left', bbox_to_anchor=(0.0, 1.0), ncol=2, handletextpad=0.2)
+axes[1].legend(loc='lower left', bbox_to_anchor=(0.0, 1.0), ncol=min(settings.N_CLUSTERS, 4), handletextpad=0.2,
+               title=REGIME_TITLE)
 for ax, letter in zip(axes, 'ab'):
-    ax.text(-0.25, 1.12, f'({letter})', transform=ax.transAxes, fontsize=9.0, va='bottom', ha='right')
+    ax.text(-0.25, 1.25, f'({letter})', transform=ax.transAxes, fontsize=9.0, va='bottom', ha='right')
 save(fig, 'cluster_tests')

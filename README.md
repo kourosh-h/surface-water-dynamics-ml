@@ -25,9 +25,10 @@ self-assembled monolayers (SAMs) of alkylsilanes on both faces of a silica slab,
   after the lag time τ, without leaving it in between.
 - MSD and *P* for regions of the first shell, for example the water at one group of atoms, with the standard deviation
   of blocks of the run and a check of how reliable every value is.
-- Two regimes of the water dynamics: k-means clustering of the systems by the shapes of their MSD and *P* curves, one
-  regime with a faster and one with a slower renewal of the first shell. The clusters are tested with the silhouette
-  score, the bootstrap stability, the two halves of the run and longer lag times.
+- Regimes of the water dynamics: k-means clustering of the systems by the shapes of their MSD and *P* curves, with the
+  regimes numbered from the fastest to the slowest renewal of the first shell. The number of regimes is a setting (two
+  in the example). The silhouette score and the bootstrap stability for different numbers of clusters help to choose
+  it, and the regimes are tested with the two halves of the run and with longer lag times.
 
 ## Groups of atoms
 
@@ -74,6 +75,9 @@ closest to. A molecule stays in the shell only while it stays at the same face.
 4. Set the frames: `LAST_FRAMES` (the analyzed frames at the end of every trajectory), `LAGS` (the lag times in
    frames) and `N_BLOCKS`. Also check the RDF settings of step 1: the first peak and the first minimum of your RDFs
    should lie within `PEAK_BEFORE` and `MINIMUM_BEFORE`.
+5. Choose the number of regimes, `N_CLUSTERS`. Step 8 writes the silhouette score and the bootstrap stability for
+   every number of clusters in `CLUSTER_NUMBERS` (`results/cluster_tests/k_scores.csv`); the higher both are, the
+   better the systems split into that many clusters. Set `N_CLUSTERS` to the best number and run steps 7 and 8 again.
 
 The clustering needs a set of systems, for example a series of coverages, of surface chemistries or of temperatures.
 For a single system, all steps up to step 6 still work.
@@ -104,8 +108,8 @@ python3 plot_figures.py
 | `step4_shell_water.py` | first-shell water at each group of atoms | `results/shell_water/` |
 | `step5_regions.py` | MSD and *P* of every region, per block | `results/regions/` |
 | `step6_tables.py` | all systems in tables, the reliability of every value, the composition of the first shell and the water counts | `results/*.csv` |
-| `step7_clusters.py` | the two regimes (k-means clustering) | `results/clusters/` |
-| `step8_cluster_tests.py` | tests of the clusters | `results/cluster_tests/` |
+| `step7_clusters.py` | the regimes (k-means clustering with `N_CLUSTERS` clusters) | `results/clusters/` |
+| `step8_cluster_tests.py` | scores for the number of clusters, and tests of the regimes | `results/cluster_tests/` |
 | `plot_figures.py` | the figures | `figures/` |
 
 Steps 1 to 5 read the trajectories with MDAnalysis and analyze several systems at the same time, one per CPU core

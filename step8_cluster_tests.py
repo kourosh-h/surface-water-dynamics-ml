@@ -1,14 +1,15 @@
 """
-Step 8: tests of the two regimes, on the MSD and P of all first-shell water of step 5 (region 'all').
+Step 8: tests of the regimes, on the MSD and P of all first-shell water of step 5 (region 'all').
 
 A system enters the tests when its values are reliable at the first lag and at every lag of SHAPE_LAGS. The regimes
 are found as in step 7: the logarithms of MSD and P divided by their values at the first lag, at the lags of
-SHAPE_LAGS, standardized; k-means with two clusters (20 starts). Regime 0 (faster renewal) is the cluster with the
-lower median of P at the last lag of SHAPE_LAGS divided by P at the first lag.
+SHAPE_LAGS, standardized; k-means with N_CLUSTERS clusters (20 starts), numbered from the fastest to the slowest
+renewal (by the median of P at the last lag of SHAPE_LAGS divided by P at the first lag, from the lowest).
 
 Tests:
     the silhouette score and the bootstrap stability (median adjusted Rand index between the clusters and those of
-        k-means refitted to RESAMPLES resamples of the systems) for every number of clusters of CLUSTER_NUMBERS;
+        k-means refitted to RESAMPLES resamples of the systems) for every number of clusters of CLUSTER_NUMBERS: the
+        number of regimes N_CLUSTERS is chosen from them;
     the regimes from each half of the blocks (their molecule - time origin pairs pooled);
     the regimes from the curves up to the longest lag at which all systems are reliable;
     the renewal index P(last lag of SHAPE_LAGS) / P(first lag), and the exponent alpha of MSD ~ tau^alpha from the
@@ -17,7 +18,7 @@ Tests:
 Input:  results/region_curves.csv and results/region_blocks.csv (step 6)
 Output (folder results/cluster_tests):
     k_scores.csv: k, silhouette, bootstrap_stability
-    renewal_index.csv: the labels of the system, regime (0 faster renewal, 1 slower renewal), P_ratio
+    renewal_index.csv: the labels of the system, regime (0 for the fastest renewal), P_ratio
     msd_exponent.csv: the labels, regime, alpha
     cluster_tests.csv: the number of systems, and the systems that keep their regime (and the adjusted Rand index) in
         the two halves of the run and with the curves up to the longest reliable lag
@@ -46,13 +47,21 @@ def curve_shapes(table, lags, first_lag):
 
 
 def regimes(shapes):
-    """k-means with two clusters on the standardized shapes; regime 0 is the cluster whose P drops more."""
+    """
+    k-means with N_CLUSTERS clusters on the standardized shapes, the clusters numbered from the fastest to the slowest
+    renewal: by the median of log(P at the last lag of SHAPE_LAGS / P at the first lag), from the lowest.
+    """
     X = StandardScaler().fit_transform(shapes)
-    labels = KMeans(n_clusters=2, random_state=settings.SEED, n_init=20).fit(X).labels_
+    clusters = KMeans(n_clusters=settings.N_CLUSTERS, random_state=settings.SEED, n_init=20).fit(X).labels_
     last = shapes[f'log P_rel at {settings.SHAPE_LAGS[-1]} ps'].to_numpy()
-    if np.median(last[labels == 0]) > np.median(last[labels == 1]):
-        labels = 1 - labels
-    return labels
+    medians = []
+    for cluster in range(settings.N_CLUSTERS):
+        medians.append(np.median(last[clusters == cluster]))
+    order = np.argsort(medians, kind='stable')          # the clusters from the lowest to the highest median
+    regime = np.zeros(len(clusters), dtype=int)
+    for number, cluster in enumerate(order):
+        regime[clusters == cluster] = number
+    return regime
 
 
 Path('results/cluster_tests').mkdir(parents=True, exist_ok=True)
