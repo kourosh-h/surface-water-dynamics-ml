@@ -76,8 +76,10 @@ closest to. A molecule stays in the shell only while it stays at the same face.
    frames) and `N_BLOCKS`. Also check the RDF settings of step 1: the first peak and the first minimum of your RDFs
    should lie within `PEAK_BEFORE` and `MINIMUM_BEFORE`.
 5. Choose the number of regimes, `N_CLUSTERS`. Step 8 writes the silhouette score and the bootstrap stability for
-   every number of clusters in `CLUSTER_NUMBERS` (`results/cluster_tests/k_scores.csv`); the higher both are, the
-   better the systems split into that many clusters. Set `N_CLUSTERS` to the best number and run steps 7 and 8 again.
+   every number of clusters in `CLUSTER_NUMBERS` (`results/cluster_tests/k_scores.csv`, and panel (a) of
+   `figures/cluster_tests.png`); the higher both are, the better the systems split into that many clusters. Set
+   `N_CLUSTERS` to the best number, run steps 7 and 8 again and then `plot_figures.py`. The figures work for any
+   number of regimes.
 
 The clustering needs a set of systems, for example a series of coverages, of surface chemistries or of temperatures.
 For a single system, all steps up to step 6 still work.
